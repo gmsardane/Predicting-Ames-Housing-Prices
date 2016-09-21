@@ -8,7 +8,8 @@ warnings.filterwarnings("ignore", category = UserWarning, module = "matplotlib")
 import matplotlib.pyplot as pl
 import numpy as np
 import sklearn.learning_curve as curves
-from sklearn.tree import DecisionTreeRegressor
+#from sklearn.tree import DecisionTreeRegressor, GradientBoostingRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.cross_validation import ShuffleSplit, train_test_split
 
 def ModelLearning(X, y):
@@ -27,9 +28,9 @@ def ModelLearning(X, y):
     # Create three different models based on max_depth
     for k, depth in enumerate([1,3,7,10]):
         
-        # Create a Decision tree regressor at max_depth = depth
-        regressor = DecisionTreeRegressor(max_depth = depth)
-
+        # Create a GradientBoostingRegressor tree regressor at max_depth = depth
+        #regressor = DecisionTreeRegressor(max_depth = depth)
+        regressor = GradientBoostingRegressor(max_depth = depth)
         # Calculate the training and testing scores
         sizes, train_scores, test_scores = curves.learning_curve(regressor, X, y, \
             cv = cv, train_sizes = train_sizes, scoring = 'r2')
@@ -58,7 +59,7 @@ def ModelLearning(X, y):
     
     # Visual aesthetics
     ax.legend(bbox_to_anchor=(1.05, 2.05), loc='lower left', borderaxespad = 0.)
-    fig.suptitle('Decision Tree Regressor Learning Performances', fontsize = 16, y = 1.03)
+    fig.suptitle('GradientBoostingRegressor Regressor Learning Performances', fontsize = 16, y = 1.03)
     fig.tight_layout()
     fig.show()
 
@@ -74,7 +75,7 @@ def ModelComplexity(X, y):
     max_depth = np.arange(1,11)
 
     # Calculate the training and testing scores
-    train_scores, test_scores = curves.validation_curve(DecisionTreeRegressor(), X, y, \
+    train_scores, test_scores = curves.validation_curve(GradientBoostingRegressor(), X, y, \
         param_name = "max_depth", param_range = max_depth, cv = cv, scoring = 'r2')
 
     # Find the mean and standard deviation for smoothing
@@ -85,7 +86,7 @@ def ModelComplexity(X, y):
 
     # Plot the validation curve
     pl.figure(figsize=(7, 5))
-    pl.title('Decision Tree Regressor Complexity Performance')
+    pl.title('GradientBoostingRegressor Tree Regressor Complexity Performance')
     pl.plot(max_depth, train_mean, 'o-', color = 'r', label = 'Training Score')
     pl.plot(max_depth, test_mean, 'o-', color = 'g', label = 'Validation Score')
     pl.fill_between(max_depth, train_mean - train_std, \
@@ -98,7 +99,7 @@ def ModelComplexity(X, y):
     pl.xlabel('Maximum Depth')
     pl.ylabel('Score')
     pl.ylim([-0.05,1.05])
-    pl.savefig('BostonHousingDTRegression.png', dpi=400)
+    pl.savefig('AmesHousingGBTRegression.png', dpi=400)
     #pl.show()
 
 
