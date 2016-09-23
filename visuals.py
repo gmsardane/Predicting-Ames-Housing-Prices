@@ -55,11 +55,11 @@ def ModelLearning(X, y):
         ax.set_xlabel('Number of Training Points')
         ax.set_ylabel('Score')
         ax.set_xlim([0, X.shape[0]*0.8])
-        ax.set_ylim([-0.05, 1.05])
+        ax.set_ylim([0.6, 1.05])
     
     # Visual aesthetics
     ax.legend(bbox_to_anchor=(1.05, 2.05), loc='lower left', borderaxespad = 0.)
-    fig.suptitle('GradientBoostingRegressor Regressor Learning Performances', fontsize = 16, y = 1.03)
+    fig.suptitle('Gradient Boosting Regressor Learning Performances', fontsize = 16, y = 1.03)
     fig.tight_layout()
     fig.show()
 
@@ -86,7 +86,7 @@ def ModelComplexity(X, y):
 
     # Plot the validation curve
     pl.figure(figsize=(7, 5))
-    pl.title('GradientBoostingRegressor Tree Regressor Complexity Performance')
+    pl.title('Gradient Boosting Regressor Complexity Performance')
     pl.plot(max_depth, train_mean, 'o-', color = 'r', label = 'Training Score')
     pl.plot(max_depth, test_mean, 'o-', color = 'g', label = 'Validation Score')
     pl.fill_between(max_depth, train_mean - train_std, \
@@ -98,7 +98,7 @@ def ModelComplexity(X, y):
     pl.legend(loc = 'lower right')
     pl.xlabel('Maximum Depth')
     pl.ylabel('Score')
-    pl.ylim([-0.05,1.05])
+    pl.ylim([0.6,1.05])
     pl.savefig('AmesHousingGBTRegression.png', dpi=400)
     #pl.show()
 
