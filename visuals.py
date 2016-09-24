@@ -61,7 +61,8 @@ def ModelLearning(X, y):
     ax.legend(bbox_to_anchor=(1.05, 2.05), loc='lower left', borderaxespad = 0.)
     fig.suptitle('Gradient Boosting Regressor Learning Performances', fontsize = 16, y = 1.03)
     fig.tight_layout()
-    fig.show()
+    pl.savefig('LearningCurvesAmesHousingGBTRegression.png', dpi=400)
+    #fig.show()
 
 
 def ModelComplexity(X, y):
