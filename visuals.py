@@ -26,13 +26,13 @@ def ModelLearning(X, y):
     fig = pl.figure(figsize=(10,7))
 
     # Create three different models based on max_depth
-    for k, depth in enumerate([0.01, 0.02, 0.05, 0.10]):
+    for k, depth in enumerate([100, 500, 1000, 2000]):
         
         # Create a GradientBoostingRegressor tree regressor at max_depth = depth
         #regressor = DecisionTreeRegressor(max_depth = depth)
-        regressor = GradientBoostingRegressor(learning_rate = depth, max_depth=2, 
+        regressor = GradientBoostingRegressor(learning_rate = 0.02, max_depth=2, 
                                               min_samples_leaf=5, min_samples_split=2,
-                                             n_estimators=1000)
+                                             n_estimators=depth)
         # Calculate the training and testing scores
         sizes, train_scores, test_scores = curves.learning_curve(regressor, X, y, \
             cv = cv, train_sizes = train_sizes, scoring = 'r2')
@@ -53,7 +53,7 @@ def ModelLearning(X, y):
             test_mean + test_std, alpha = 0.15, color = 'g')
         
         # Labels
-        ax.set_title('Learning Rate = %s'%(depth))
+        ax.set_title('Number of Learners = %s'%(depth))
         ax.set_xlabel('Number of Training Points')
         ax.set_ylabel('Score')
         ax.set_xlim([0, X.shape[0]*0.8])
@@ -63,7 +63,7 @@ def ModelLearning(X, y):
     ax.legend(bbox_to_anchor=(1.05, 2.05), loc='lower left', borderaxespad = 0.)
     fig.suptitle('Gradient Boosting Regressor Learning Performances', fontsize = 16, y = 1.03)
     fig.tight_layout()
-    pl.savefig('LearningCurvesAmesHousingGBTRegression_LR.pdf', dpi=400)
+    pl.savefig('LearningCurvesAmesHousingGBTRegression_nest.pdf', dpi=400)
     #fig.show()
 
 
@@ -75,11 +75,14 @@ def ModelComplexity(X, y):
     cv = ShuffleSplit(X.shape[0], n_iter = 10, test_size = 0.2, random_state = 0)
 
     # Vary the max_depth parameter from 1 to 10
-    max_depth = [0.01, 0.02, 0.05, 0.1]#np.arange(1,6)
+    #learning_rate = [0.01, 0.02, 0.05, 0.1]#np.arange(1,6)
+    n_estimators = [50, 100, 500, 1000]
 
     # Calculate the training and testing scores
-    train_scores, test_scores = curves.validation_curve(GradientBoostingRegressor(), X, y, \
-        param_name = "learning_rate", param_range = max_depth, cv = cv, scoring = 'r2')
+    train_scores, test_scores = curves.validation_curve(GradientBoostingRegressor(learning_rate = 0.02, max_depth=2, 
+                                              min_samples_leaf=5, min_samples_split=2,
+                                             n_estimators=n_estimators), X, y, \
+        param_name = "n_estimators", param_range = n_estimators, cv = cv, scoring = 'r2')
 
     # Find the mean and standard deviation for smoothing
     train_mean = np.mean(train_scores, axis=1)
@@ -90,19 +93,19 @@ def ModelComplexity(X, y):
     # Plot the validation curve
     pl.figure(figsize=(7, 5))
     pl.title('Gradient Boosting Regressor Complexity Performance')
-    pl.plot(max_depth, train_mean, 'o-', color = 'r', label = 'Training Score')
-    pl.plot(max_depth, test_mean, 'o-', color = 'g', label = 'Validation Score')
-    pl.fill_between(max_depth, train_mean - train_std, \
+    pl.plot(n_estimators, train_mean, 'o-', color = 'r', label = 'Training Score')
+    pl.plot(n_estimators, test_mean, 'o-', color = 'g', label = 'Validation Score')
+    pl.fill_between(n_estimators, train_mean - train_std, \
         train_mean + train_std, alpha = 0.15, color = 'r')
-    pl.fill_between(max_depth, test_mean - test_std, \
+    pl.fill_between(n_estimators, test_mean - test_std, \
         test_mean + test_std, alpha = 0.15, color = 'g')
     
     # Visual aesthetics
     pl.legend(loc = 'lower right')
-    pl.xlabel('Learning Rate')
+    pl.xlabel('Number of Learners')
     pl.ylabel('Score')
-    pl.ylim([0.6,1.05])
-    pl.savefig('AmesHousingGBTRegression_LR.pdf', dpi=400)
+    pl.ylim([0.,1.05])
+    pl.savefig('AmesHousingGBTRegression_nest.pdf', dpi=400)
     #pl.show()
 
 
